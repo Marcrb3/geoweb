@@ -1,7 +1,7 @@
 <html lang="es">
 
 <head>
-    <title>Ejemplo 1 Cesium personalizado</title>
+    <title>Ruta cesium</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="autor" />
@@ -30,12 +30,8 @@
     </style>
     <script>
         function Init() {
-
-            var terrain5M = new Cesium.CesiumTerrainProvider({
-                url: 'https://tilemaps.icgc.cat/terrenys/demextes/'
-            });
             Cesium.Ion.defaultAccessToken =
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhMTI3Mjk3ZC02NzgwLTRmNDEtODc2MC0yM2YzNWU3MTExMWUiLCJpZCI6NzQ2Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0OTQ3MTE3MH0.owdFizYRnPR2G7pOXSRxZGBJQsoMxp0wxYMtWFycrcc';
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhMTI3Mjk3ZC02NzgwLTRmNDEtODc2MC0yM2YzNWU3MTExMWUiLCJpZCI6NzQ2Miwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0OTQ3MTE3MH0.owdFizYRnPR2G7pOXSRxZGBJQsoMxp0wxYMtWFycrcc';
             map = new Cesium.Viewer('map', {
 
                 imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
@@ -47,24 +43,27 @@
                 scene3DOnly: true,
                 fullscreenButton: true,
                 baseLayerPicker: false,
-                vrButton: true,
                 homeButton: false,
                 infoBox: true,
                 sceneModePicker: false,
                 animation: false,
                 geocoder: false,
                 sceneMode: Cesium.SceneMode.SCENE3D,
-                terrainProvider: terrain5M
+                terrainProvider: Cesium.createWorldTerrain()
 
             });
 
-
-            map.camera.flyTo({
-                destination: Cesium.Cartesian3.fromDegrees(2.92988, 41.63354, 8000),
-                orientation: {
-                    pitch: Cesium.Math.toRadians(-45.0)
-                },
+            GPX_lyr = Cesium.GeoJsonDataSource.load('datos/ruta.geojson', {
+                stroke: Cesium.Color.BLUE,
+                strokeWidth: 4,
+                clampToGround: true
             });
+
+            GPX_lyr.then(function (dataSource) {
+                map.dataSources.add(dataSource);
+                map.flyTo(dataSource);
+            });
+
         };
     </script>
 </head>
